@@ -11,14 +11,12 @@ final class Parser
         $file = \fopen($inputPath, 'r');
         while ($line = \fgets($file)) {
             // Practically unsafe, but \fgetcsv is slow
-            $line = \explode(',', $line);
-
-            $result[\substr($line[0], 19)][] = \substr($line[1], 0, 10);
+            $result[\substr($line, 19, \strpos($line, ',') - 19)][] = \substr($line, \strpos($line, ',') + 1, 10);
         }
 
         foreach ($result as &$visits) {
             $visits = \array_count_values($visits);
-            \ksort($visits);
+            \ksort($visits, \SORT_STRING);
         }
 
         \file_put_contents($outputPath, \json_encode($result, \JSON_PRETTY_PRINT));
