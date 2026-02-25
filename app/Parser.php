@@ -8,9 +8,12 @@ final class Parser
     {
         $result = [];
 
-        $file = \fopen($inputPath, 'rb');
-        while ($line = \fgetcsv($file, escape: '"')) {
-            $result[\parse_url($line[0], \PHP_URL_PATH)][] = \substr($line[1], 0, 10);
+        $file = \fopen($inputPath, 'r');
+        while ($line = \fgets($file)) {
+            // Practically unsafe, but \fgetcsv is slow
+            $line = \explode(',', $line);
+
+            $result[\substr($line[0], 19)][] = \substr($line[1], 0, 10);
         }
 
         foreach ($result as &$visits) {
